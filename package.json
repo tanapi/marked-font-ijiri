@@ -1,0 +1,56 @@
+{
+  "name": "marked-font-ijiri",
+  "version": "0.1.0",
+  "description": "A marked extension for Japanese text-site style font decoration syntax.",
+  "type": "module",
+  "main": "./marked-font-ijiri.js",
+  "module": "./marked-font-ijiri.js",
+  "types": "./marked-font-ijiri.d.ts",
+  "style": "./font-ijiri.css",
+  "exports": {
+    ".": {
+      "types": "./marked-font-ijiri.d.ts",
+      "import": "./marked-font-ijiri.js",
+      "default": "./marked-font-ijiri.js"
+    },
+    "./font-ijiri.css": "./font-ijiri.css",
+    "./style.css": "./font-ijiri.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "marked-font-ijiri.js",
+    "marked-font-ijiri.d.ts",
+    "font-ijiri.css",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": [
+    "./font-ijiri.css"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "node --check marked-font-ijiri.js && node test/marked-font-ijiri.test.js",
+    "build:pages": "node scripts/build-pages.mjs",
+    "pack:check": "npm pack --dry-run",
+    "prepublishOnly": "npm run test && npm run pack:check"
+  },
+  "keywords": [
+    "marked",
+    "marked-extension",
+    "markdown",
+    "text-site",
+    "japanese"
+  ],
+  "peerDependencies": {
+    "marked": ">=12"
+  },
+  "devDependencies": {
+    "marked": "^12.0.2"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}

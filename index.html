@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>marked-font-ijiri live preview</title>
+<link rel="stylesheet" href="./font-ijiri.css">
+<style>
+  :root {
+    color-scheme: light;
+    --app-bg: #f5f6f0;
+    --panel: #ffffff;
+    --panel-2: #eef2ec;
+    --ink: #20231f;
+    --muted: #61685e;
+    --line: #cfd7ca;
+    --line-strong: #9fac98;
+    --accent: #1f7a52;
+    --accent-2: #a33b4a;
+    --code-bg: #172018;
+    --code-ink: #eaf2e5;
+    --focus: #d69b2d;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--app-bg);
+    color: var(--ink);
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", system-ui, sans-serif;
+  }
+
+  button,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  button {
+    border: 1px solid var(--line-strong);
+    background: var(--panel);
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  button:hover {
+    border-color: var(--accent);
+  }
+
+  button:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .app {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    min-height: 100vh;
+  }
+
+  .topbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 16px;
+    align-items: center;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+
+  .brand {
+    min-width: 0;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.25;
+  }
+
+  .subtitle {
+    margin: 3px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  .toolbar button,
+  .toolbar select {
+    min-height: 34px;
+    border-radius: 6px;
+    padding: 0 10px;
+  }
+
+  .toolbar select {
+    border: 1px solid var(--line-strong);
+    background: var(--panel);
+    color: var(--ink);
+  }
+
+  .workspace {
+    display: grid;
+    grid-template-columns: minmax(300px, 35vw) minmax(320px, 1fr) minmax(280px, 30vw);
+    min-height: 0;
+  }
+
+  .pane {
+    min-width: 0;
+    min-height: 0;
+    border-right: 1px solid var(--line);
+    background: var(--panel);
+  }
+
+  .pane:last-child {
+    border-right: 0;
+  }
+
+  .pane-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 42px;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--line);
+    background: var(--panel-2);
+  }
+
+  .pane-title {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .stat {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  #source {
+    display: block;
+    width: 100%;
+    height: calc(100vh - 97px);
+    min-height: 500px;
+    padding: 16px;
+    border: 0;
+    resize: none;
+    background: #fbfbf7;
+    color: var(--ink);
+    font: 14px/1.65 "SFMono-Regular", Consolas, "MS Gothic", monospace;
+    tab-size: 4;
+  }
+
+  .preview-wrap {
+    height: calc(100vh - 97px);
+    min-height: 500px;
+    overflow: auto;
+    background: #d6d8cf;
+  }
+
+  #preview.fi-doc {
+    min-height: 100%;
+    padding: 28px 18px 44px;
+  }
+
+  .side {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    height: calc(100vh - 55px);
+    min-height: 0;
+  }
+
+  .tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    border-bottom: 1px solid var(--line);
+    background: var(--line);
+  }
+
+  .tab {
+    min-height: 38px;
+    border: 0;
+    border-radius: 0;
+    background: var(--panel-2);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .tab[aria-selected="true"] {
+    background: var(--panel);
+    color: var(--accent);
+  }
+
+  .side-scroll {
+    min-height: 0;
+    overflow: auto;
+    padding: 14px;
+  }
+
+  .syntax-list {
+    display: grid;
+    gap: 10px;
+  }
+
+  .syntax-item {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--panel);
+  }
+
+  .syntax-button {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px;
+    border: 0;
+    border-radius: 0;
+    text-align: left;
+  }
+
+  .syntax-button code {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    color: var(--accent-2);
+    font-family: "SFMono-Regular", Consolas, "MS Gothic", monospace;
+    font-size: 13px;
+  }
+
+  .syntax-button span {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .syntax-preview {
+    padding: 10px;
+    border-top: 1px solid var(--line);
+    background: #fafbf7;
+  }
+
+  .mini-doc.fi-doc {
+    min-height: 78px;
+    padding: 14px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+
+  .html-output {
+    display: none;
+  }
+
+  .html-output.is-active {
+    display: block;
+  }
+
+  #html {
+    min-height: calc(100vh - 152px);
+    margin: 0;
+    padding: 14px;
+    overflow: auto;
+    border-radius: 8px;
+    background: var(--code-bg);
+    color: var(--code-ink);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font: 12px/1.55 "SFMono-Regular", Consolas, monospace;
+  }
+
+  .is-hidden {
+    display: none;
+  }
+
+  @media (max-width: 1180px) {
+    .workspace {
+      grid-template-columns: minmax(300px, 42vw) minmax(320px, 1fr);
+    }
+
+    .side {
+      grid-column: 1 / -1;
+      height: auto;
+      border-top: 1px solid var(--line);
+    }
+
+    .side-scroll {
+      max-height: none;
+      overflow: visible;
+    }
+
+    .syntax-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 760px) {
+    .topbar {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .toolbar {
+      justify-content: flex-start;
+    }
+
+    .workspace {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .pane {
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    #source,
+    .preview-wrap {
+      height: auto;
+      min-height: 360px;
+    }
+
+    .syntax-list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <h1>marked-font-ijiri live preview</h1>
+      <p class="subtitle">拡張記法を編集しながら、marked の出力と表示結果を確認できます。</p>
+    </div>
+    <div class="toolbar" aria-label="プレビュー操作">
+      <select id="sample" aria-label="サンプルを選択">
+        <option value="basic">基本サンプル</option>
+        <option value="long">複数行と字下げ</option>
+        <option value="image">画像記法</option>
+      </select>
+      <button type="button" id="copy-html">HTMLをコピー</button>
+      <button type="button" id="reset">リセット</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <section class="pane" aria-labelledby="source-title">
+      <div class="pane-head">
+        <h2 class="pane-title" id="source-title">入力</h2>
+        <span class="stat" id="source-stat"></span>
+      </div>
+      <textarea id="source" spellcheck="false"></textarea>
+    </section>
+
+    <section class="pane" aria-labelledby="preview-title">
+      <div class="pane-head">
+        <h2 class="pane-title" id="preview-title">プレビュー</h2>
+        <span class="stat" id="doc-class"></span>
+      </div>
+      <div class="preview-wrap">
+        <div id="preview" class="fi-doc fi-theme-black fi-align-center"></div>
+      </div>
+    </section>
+
+    <aside class="pane side" aria-labelledby="syntax-title">
+      <div class="tabs" role="tablist" aria-label="補助表示">
+        <button class="tab" type="button" role="tab" id="tab-syntax" aria-controls="panel-syntax" aria-selected="true">文法</button>
+        <button class="tab" type="button" role="tab" id="tab-html" aria-controls="panel-html" aria-selected="false">HTML</button>
+      </div>
+      <div class="side-scroll">
+        <section id="panel-syntax" role="tabpanel" aria-labelledby="tab-syntax">
+          <h2 class="pane-title" id="syntax-title">クリックで入力に追加</h2>
+          <div class="syntax-list" id="syntax-list"></div>
+        </section>
+        <section id="panel-html" class="html-output" role="tabpanel" aria-labelledby="tab-html">
+          <pre id="html"></pre>
+        </section>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<script type="module">
+import { Marked } from 'https://esm.sh/marked@12';
+import { docClass, fontIjiri } from './marked-font-ijiri.js';
+
+const samples = {
+  basic: `---
+theme: black
+align: center
+---
+
+{!! テキストサイト風の大きな文字}
+
+++
+
+{!!!R* 赤くて太い巨大文字}
+
++5
+
+((~ 小さなつぶやき))
+
+^漢字|かんじ^ と ｜青空《あおぞら》ルビ
+
+::中央寄せ::
+>>右寄せ>>
+<<左寄せ<<`,
+  long: `---
+theme: white
+align: left
+---
+
+　行頭の空白はそのまま字下げになります。
+  半角スペースも NBSP に変換されます。
+
+{{{m
+複数行をまとめて明朝にします。
+{R 中のインライン記法} も使えます。
+}}}
+
++6
+
+>> 
+右寄せの複数行ブロック
+{. 小さく補足}
+>>`,
+  image: `---
+theme: dos
+align: center
+---
+
+{# ./assets/sample-photo.png}
+
+{..R ./assets/sample-photo.png}
+
+{s ./assets/sample-photo.png}
+
+./assets/sample-photo.png
+
+画像パスだけが本文なら画像として表示されます。`,
+};
+
+const syntax = [
+  ['{修飾子 本文}', '{!!R* 大きく赤く太い文字}', 'インライン修飾'],
+  ['((本文))', '((~ 小さな補足))', '小さい文字の略記'],
+  ['+++ / +15', '+5', '空き行'],
+  ['::本文::', '::中央寄せ::', '中央寄せ'],
+  ['>>本文>>', '>>右寄せ>>', '右寄せ'],
+  ['<<本文<<', '<<左寄せ<<', '左寄せ'],
+  ['^漢字|かな^', '^先行者|せんこうしゃ^', 'ルビ'],
+  ['｜漢字《かな》', '｜青空《あおぞら》', '青空文庫風ルビ'],
+  ['{{{修飾子 ... }}}', '{{{R\\n複数行の赤文字\\n}}}', '複数行ブロック'],
+  ['画像パスだけの行', './assets/sample-photo.png', '中サイズ画像'],
+  ['{修飾子 画像URL}', '{# ./assets/sample-photo.png}', '中央寄せ画像'],
+  ['行頭空白', '半角スペースで字下げ\\n        半角スペースで字下げ', '字下げ'],
+  ['修飾子一覧', '{!!!!Y*ob 目立つ文字}', '!, ., R/B/Y/G/P/W/K, m/g/t, b/s/o, */_/__/~/#/ -'],
+];
+
+const marked = new Marked({ breaks: true });
+marked.use(fontIjiri());
+
+const source = document.getElementById('source');
+const preview = document.getElementById('preview');
+const html = document.getElementById('html');
+const sample = document.getElementById('sample');
+const sourceStat = document.getElementById('source-stat');
+const docClassLabel = document.getElementById('doc-class');
+const syntaxList = document.getElementById('syntax-list');
+
+function renderMarkdown(markdown) {
+  return marked.parse(markdown);
+}
+
+function update() {
+  const rendered = renderMarkdown(source.value);
+  preview.innerHTML = rendered;
+  preview.className = docClass();
+  html.textContent = rendered.trim();
+  sourceStat.textContent = `${source.value.length}文字`;
+  docClassLabel.textContent = docClass();
+}
+
+function insertAtCursor(textarea, text) {
+  const start = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+  const before = textarea.value.slice(0, start);
+  const after = textarea.value.slice(end);
+  const prefix = before && !before.endsWith('\n') ? '\n\n' : '';
+  const suffix = after && !after.startsWith('\n') ? '\n\n' : '';
+  textarea.value = before + prefix + text + suffix + after;
+  const cursor = (before + prefix + text).length;
+  textarea.setSelectionRange(cursor, cursor);
+  textarea.focus();
+  update();
+}
+
+function renderSyntaxList() {
+  syntaxList.innerHTML = '';
+
+  for (const [label, snippet, description] of syntax) {
+    const expandedSnippet = snippet.replaceAll('\\n', '\n');
+    const item = document.createElement('article');
+    item.className = 'syntax-item';
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'syntax-button';
+    button.innerHTML = `<code></code><span></span>`;
+    button.querySelector('code').textContent = label;
+    button.querySelector('span').textContent = description;
+    button.addEventListener('click', () => insertAtCursor(source, expandedSnippet));
+
+    const rendered = document.createElement('div');
+    rendered.className = 'syntax-preview';
+    const mini = document.createElement('div');
+    mini.className = 'mini-doc fi-doc fi-theme-white fi-align-center';
+    mini.innerHTML = renderMarkdown(expandedSnippet);
+    rendered.append(mini);
+
+    item.append(button, rendered);
+    syntaxList.append(item);
+  }
+}
+
+function setTab(target) {
+  const syntaxTab = document.getElementById('tab-syntax');
+  const htmlTab = document.getElementById('tab-html');
+  const syntaxPanel = document.getElementById('panel-syntax');
+  const htmlPanel = document.getElementById('panel-html');
+  const showHtml = target === 'html';
+
+  syntaxTab.setAttribute('aria-selected', String(!showHtml));
+  htmlTab.setAttribute('aria-selected', String(showHtml));
+  syntaxPanel.classList.toggle('is-hidden', showHtml);
+  htmlPanel.classList.toggle('is-active', showHtml);
+}
+
+source.addEventListener('input', update);
+sample.addEventListener('change', () => {
+  source.value = samples[sample.value];
+  update();
+});
+
+document.getElementById('reset').addEventListener('click', () => {
+  source.value = samples[sample.value];
+  update();
+});
+
+document.getElementById('copy-html').addEventListener('click', async () => {
+  await navigator.clipboard.writeText(html.textContent);
+});
+
+document.getElementById('tab-syntax').addEventListener('click', () => setTab('syntax'));
+document.getElementById('tab-html').addEventListener('click', () => setTab('html'));
+
+source.value = samples.basic;
+renderSyntaxList();
+update();
+</script>
+</body>
+</html>

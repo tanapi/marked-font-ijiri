@@ -1,0 +1,209 @@
+/* font-ijiri.css --- marked-font-ijiri が出力する HTML 用のスタイル */
+
+.fi-doc {
+  font-family: "MS PGothic", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  padding: 2.5em 1.5em;
+  text-align: center;
+  word-break: break-word;
+}
+
+/* ---------- テーマ ---------- */
+
+.fi-doc,
+.fi-theme-black {
+  --fi-bg: #000;
+  --fi-fg: #fff;
+  --fi-outline: #fff;
+  --fi-R: #ff2d2d;
+  --fi-B: #4d9bff;
+  --fi-Y: #ffe000;
+  --fi-G: #46e05a;
+  --fi-P: #ff85c0;
+  --fi-W: #fff;
+  --fi-K: #000;
+  --fi-shadow: rgba(255, 255, 255, 0.65);
+  --fi-img-shadow: rgba(255, 255, 255, 0.42);
+}
+
+.fi-theme-dos {
+  --fi-bg: #000;
+  --fi-fg: #33ff33;
+  --fi-outline: #33ff33;
+  --fi-R: #ff5555;
+  --fi-B: #5555ff;
+  --fi-Y: #ffff55;
+  --fi-G: #55ff55;
+  --fi-P: #ff55ff;
+  --fi-W: #fff;
+  --fi-K: #000;
+  --fi-shadow: rgba(153, 255, 153, 0.72);
+  --fi-img-shadow: rgba(51, 255, 51, 0.42);
+  font-family: "MS Gothic", "Osaka-Mono", monospace;
+}
+
+.fi-theme-white {
+  --fi-bg: #fff;
+  --fi-fg: #000;
+  --fi-outline: #000;
+  --fi-R: #d40000;
+  --fi-B: #0033cc;
+  --fi-Y: #b58900;
+  --fi-G: #157f2b;
+  --fi-P: #c2185b;
+  --fi-W: #fff;
+  --fi-K: #000;
+  --fi-shadow: rgba(0, 0, 0, 0.85);
+  --fi-img-shadow: rgba(0, 0, 0, 0.45);
+}
+
+.fi-doc {
+  background: var(--fi-bg);
+  color: var(--fi-fg);
+}
+
+/* ---------- サイズ ---------- */
+
+.fi {
+  display: inline-block;
+  line-height: 1.15;
+}
+
+.fi-z00 { font-size: 0.6em; }
+.fi-z0 { font-size: 0.8em; }
+.fi-z1 { font-size: 1.5em; }
+.fi-z2 { font-size: 2.5em; }
+.fi-z3 { font-size: 4em; }
+.fi-z4 { font-size: 6em; }
+
+/* ---------- 色 ---------- */
+
+.fi-c-R { color: var(--fi-R); }
+.fi-c-B { color: var(--fi-B); }
+.fi-c-Y { color: var(--fi-Y); }
+.fi-c-G { color: var(--fi-G); }
+.fi-c-P { color: var(--fi-P); }
+.fi-c-W { color: var(--fi-W); }
+.fi-c-K { color: var(--fi-K); }
+
+/* ---------- 書体 ---------- */
+
+.fi-f-m { font-family: "MS PMincho", "Hiragino Mincho ProN", "Yu Mincho", serif; }
+.fi-f-g { font-family: "MS PGothic", "Hiragino Kaku Gothic ProN", sans-serif; }
+.fi-f-t { font-family: "MS Gothic", "Osaka-Mono", monospace; }
+
+/* ---------- 装飾 ---------- */
+
+.fi-b { font-weight: bold; }
+.fi-i { font-style: italic; }
+.fi-u { text-decoration: underline; }
+.fi-strike { text-decoration: line-through; }
+.fi-dim { opacity: 0.55; }
+
+.fi-box {
+  border: 2px solid currentColor;
+  padding: 0 0.2em;
+}
+
+.fi-shadow { text-shadow: 0.06em 0.06em 0 var(--fi-shadow); }
+
+.fi-outline {
+  -webkit-text-stroke: 0.04em var(--fi-outline);
+  paint-order: stroke fill;
+}
+
+.fi-blink { animation: fi-blink 1s steps(1) infinite; }
+
+@keyframes fi-blink {
+  50% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fi-blink { animation: none; }
+}
+
+/* ---------- ブロック ---------- */
+
+.fi-doc p { margin: 0; }
+.fi-doc img { max-width: 100%; }
+.fi-doc rt { font-size: 0.5em; font-weight: normal; }
+
+.fi-align-center { text-align: center; }
+.fi-align-left { text-align: left; }
+.fi-align-right { text-align: right; }
+
+.fi-block { display: block; }
+
+.fi-center { text-align: center; }
+.fi-right { text-align: right; }
+.fi-left { text-align: left; }
+
+.fi-ma {
+  display: block;
+  pointer-events: none;
+}
+
+/* ---------- 画像 ---------- */
+
+.fi-img {
+  display: block;
+  width: 100%;
+  margin: 1em auto;
+  text-align: center;
+}
+
+.fi-img img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.fi-left .fi-img img {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.fi-right .fi-img img {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.fi-center .fi-img img {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.fi-img-size-1 img { width: 20%; }
+.fi-img-size-2 img { width: 40%; }
+.fi-img-size-3 img { width: 60%; }
+.fi-img-size-4 img { width: 80%; }
+.fi-img-size-5 img { width: 100%; }
+
+.fi-img-frame-color img {
+  padding: 3px;
+  border: 3px solid var(--fi-img-border, currentColor);
+  background: var(--fi-bg);
+}
+
+.fi-img-color-R { --fi-img-border: var(--fi-R); }
+.fi-img-color-B { --fi-img-border: var(--fi-B); }
+.fi-img-color-Y { --fi-img-border: var(--fi-Y); }
+.fi-img-color-G { --fi-img-border: var(--fi-G); }
+.fi-img-color-P { --fi-img-border: var(--fi-P); }
+.fi-img-color-W { --fi-img-border: var(--fi-W); }
+.fi-img-color-K { --fi-img-border: var(--fi-K); }
+
+.fi-img-frame-photo img {
+  padding: 8px 8px 22px;
+  border: 1px solid #d8d2c4;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+}
+
+.fi-img-frame-shadow img {
+  box-shadow: 0.45em 0.45em 0 var(--fi-img-shadow);
+}

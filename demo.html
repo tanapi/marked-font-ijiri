@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>フォント弄り記法 — marked extension</title>
+<link rel="stylesheet" href="font-ijiri.css">
+<style>
+  body {
+    margin: 0;
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    background: #d9d9d2;
+    color: #1c1c1a;
+  }
+  header {
+    padding: 14px 18px;
+    border-bottom: 1px solid #b3b3ab;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  h1 { font-size: 15px; font-weight: 500; margin: 0; }
+  header span { font-size: 12px; color: #6b6b64; }
+  main {
+    display: grid;
+    grid-template-columns: minmax(0, 380px) minmax(0, 1fr);
+    gap: 1px;
+    background: #b3b3ab;
+    min-height: calc(100vh - 50px);
+  }
+  #src {
+    border: 0;
+    padding: 16px;
+    font-family: "SFMono-Regular", Consolas, "MS Gothic", monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    resize: none;
+    background: #f2f1ec;
+    color: #1c1c1a;
+    outline: none;
+  }
+  #out {
+    overflow-y: auto;
+    max-height: calc(100vh - 50px);
+  }
+  @media (max-width: 720px) {
+    main { grid-template-columns: minmax(0, 1fr); }
+    #src { min-height: 300px; }
+    #out { max-height: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>フォント弄り記法</h1>
+  <span>左を編集すると右に反映されます</span>
+</header>
+
+<main>
+  <textarea id="src" spellcheck="false">---
+theme: black
+align: center
+---
+
+{!! ある国がロボット技術の最先端をひた走る}
+
++++
+
+それは
+
+++
+
+{!!!R* 中華人民共和国}
+
++++++
+
+((~ 一応、４０００年の歴史があるらしい))
+
++8
+
+{Y さぁ中国政府の切り札}
+
+{!! ^先行者|せんこうしゃ^の登場です}
+
++20
+
+{!!!Y*o 追いついてない}
+
+++++
+
+{!!!R* ちっとも追いついてないよ}
+
++6
+
+{.# さすが中国人}
+
++++
+
+{{{m
+　複数行にまとめて修飾したいときは
+　三重の波括弧で囲みます。
+}}}
+
++++
+
+>>{. 2001年3月　侍魂}>>
+</textarea>
+  <div id="out" class="fi-doc fi-theme-black fi-align-center"></div>
+</main>
+
+<script type="module">
+import { Marked } from 'https://esm.sh/marked@18';
+import { fontIjiri, docClass } from './marked-font-ijiri.js';
+
+const marked = new Marked({ breaks: true });
+marked.use(fontIjiri());
+
+const src = document.getElementById('src');
+const out = document.getElementById('out');
+
+function render() {
+  out.innerHTML = marked.parse(src.value);
+  out.className = docClass();
+}
+
+src.addEventListener('input', render);
+render();
+</script>
+
+</body>
+</html>
