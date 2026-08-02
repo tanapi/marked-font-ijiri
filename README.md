@@ -209,17 +209,26 @@ GitHub Actions では `main` / `release/**` への push と `main` 向け Pull R
 
 ## リリース
 
-GitHub Release を公開すると、`.github/workflows/publish.yml` が `npm publish --access public` を実行します。
-手動で同じ workflow を実行することもできます。
+初回リリース時は npm 上にまだパッケージがないため、先にローカルから一度だけ公開します。
 
-npm 側では、パッケージ設定で Trusted Publisher を追加してください。
+```sh
+npm login
+npm publish --access public
+```
+
+初回公開後、npm 側で Trusted Publisher を追加してください。
+
+設定値:
 
 - Provider: GitHub Actions
 - Repository: `tanapi/marked-font-ijiri`
 - Workflow filename: `publish.yml`
 - Allowed action: `npm publish`
 
-リリース前に `package.json` の `version` と `CHANGELOG.md` を更新し、`v0.1.0` のようなタグまたは GitHub Release を作成します。
+Trusted Publisher 設定後は、GitHub Release を公開すると `.github/workflows/publish.yml` が
+`npm publish --access public` を実行します。手動で同じ workflow を実行することもできます。
+
+次回以降のリリース前に `package.json` の `version` と `CHANGELOG.md` を更新し、`v0.1.0` のようなタグまたは GitHub Release を作成します。
 
 ## 仕様上の注意
 
