@@ -215,7 +215,7 @@ GitHub Release を公開すると、`.github/workflows/publish.yml` が `npm pub
 npm 側では、パッケージ設定で Trusted Publisher を追加してください。
 
 - Provider: GitHub Actions
-- Repository: このパッケージを置く GitHub リポジトリ
+- Repository: `tanapi/marked-font-ijiri`
 - Workflow filename: `publish.yml`
 - Allowed action: `npm publish`
 

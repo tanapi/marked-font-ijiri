@@ -43,6 +43,14 @@
     "text-site",
     "japanese"
   ],
+  "homepage": "https://tanapi.github.io/marked-font-ijiri/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tanapi/marked-font-ijiri.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tanapi/marked-font-ijiri/issues"
+  },
   "peerDependencies": {
     "marked": ">=12"
   },
