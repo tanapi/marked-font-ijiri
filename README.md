@@ -219,7 +219,7 @@ npm 側では、パッケージ設定で Trusted Publisher を追加してくだ
 - Workflow filename: `publish.yml`
 - Allowed action: `npm publish`
 
-リリース前に `package.json` の `version` を更新し、`v0.1.0` のようなタグまたは GitHub Release を作成します。
+リリース前に `package.json` の `version` と `CHANGELOG.md` を更新し、`v0.1.0` のようなタグまたは GitHub Release を作成します。
 
 ## 仕様上の注意
 

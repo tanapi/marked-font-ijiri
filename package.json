@@ -22,6 +22,7 @@
     "marked-font-ijiri.d.ts",
     "font-ijiri.css",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "sideEffects": [
