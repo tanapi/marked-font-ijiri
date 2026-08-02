@@ -2,6 +2,8 @@
 
 テキストサイト風「フォント弄り」記法を [marked](https://marked.js.org/) に追加する拡張です。
 
+[ライブデモ](https://tanapi.github.io/marked-font-ijiri/)
+
 ## 使い方
 
 ```sh
