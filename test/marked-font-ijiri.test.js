@@ -19,9 +19,9 @@ function render(source, options) {
 }
 
 test('renders inline font decoration classes', () => {
-  const html = render('{!!R* 中華人民共和国}');
+  const html = render('{!!R* 赤くて太い巨大文字}');
 
-  assert.match(html, /<span class="fi fi-z2 fi-c-R fi-b">中華人民共和国<\/span>/);
+  assert.match(html, /<span class="fi fi-z2 fi-c-R fi-b">赤くて太い巨大文字<\/span>/);
 });
 
 test('leaves non font-ijiri braces untouched', () => {

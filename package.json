@@ -1,6 +1,6 @@
 {
   "name": "marked-font-ijiri",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A marked extension for Japanese text-site style font decoration syntax.",
   "type": "module",
   "main": "./marked-font-ijiri.js",
