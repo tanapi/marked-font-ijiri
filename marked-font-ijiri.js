@@ -220,7 +220,7 @@ const ruby = {
   },
   renderer(token) {
     const base = this.parser.parseInline(token.tokens);
-    return `<ruby>${base}<rp>（</rp><rt>${token.text}</rt><rp>）</rp></ruby>`;
+    return `<ruby>${base}<rp>（</rp><rt>${escAttr(token.text)}</rt><rp>）</rp></ruby>`;
   },
 };
 
@@ -403,6 +403,10 @@ function convertIndent(markdown) {
 /* ---------- フロントマター ---------- */
 
 const DEFAULT_META = { theme: 'black', align: 'center' };
+const META_ALLOWED = {
+  theme: new Set(['black', 'dos', 'white']),
+  align: new Set(['center', 'left', 'right']),
+};
 
 let lastMeta = { ...DEFAULT_META };
 
@@ -414,7 +418,15 @@ function makePreprocess(indent) {
     if (m) {
       for (const line of m[1].split(/\r?\n/)) {
         const kv = /^\s*([A-Za-z_][\w-]*)\s*:\s*(\S+)/.exec(line);
-        if (kv) lastMeta[kv[1].toLowerCase()] = kv[2].toLowerCase();
+        if (!kv) continue;
+
+        const key = kv[1].toLowerCase();
+        const value = kv[2].toLowerCase();
+        if (META_ALLOWED[key]) {
+          lastMeta[key] = META_ALLOWED[key].has(value) ? value : DEFAULT_META[key];
+        } else {
+          lastMeta[key] = value;
+        }
       }
       markdown = markdown.slice(m[0].length);
     }

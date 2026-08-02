@@ -73,6 +73,20 @@ test('updates document metadata from front matter', () => {
   assert.equal(docClass(), 'fi-doc fi-theme-white fi-align-left');
 });
 
+test('falls back to default document metadata for unknown theme and align values', () => {
+  render('---\ntheme: evil\" onclick=\"alert(1)\nalign: bad\n---\n\n本文');
+
+  assert.equal(getTheme(), 'black');
+  assert.deepEqual(getMeta(), { theme: 'black', align: 'center' });
+  assert.equal(docClass(), 'fi-doc fi-theme-black fi-align-center');
+});
+
+test('escapes ruby annotation text', () => {
+  const html = render('^漢字|<script>alert(1)</script>^');
+
+  assert.match(html, /<rt>&lt;script&gt;alert\(1\)&lt;\/script&gt;<\/rt>/);
+});
+
 test('supports custom inline delimiters', () => {
   const html = render('[R 赤]', { open: '[', close: ']' });
 
